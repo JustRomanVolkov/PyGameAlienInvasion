@@ -14,10 +14,10 @@
 # $ python3
 # import pygame
 
-import sys 
 import pygame
 from settings import Settings
 from ship import Ship
+import game_functions as gf
 
 def run_game():
     # инициализирует игру и создает объект экрана
@@ -34,13 +34,7 @@ def run_game():
     while True:
         # отслеживание событий клавиатуры и мыши
         for event in pygame.event.get():
-            # перерисовка экрана
-            screen.fill(ai_settings.bg_color)
-            ship.blitme()
-            if event.type == pygame.QUIT():
-            sys.exit()
-        
-    # отображение последнего прорисованного экрана
-    pygame.display.flip()
+            gf.check_events()
+            gf.update_screen(ai_settings, screen, ship)
     
 run_game()
