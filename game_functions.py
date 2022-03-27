@@ -1,5 +1,6 @@
 import sys
 import pygame
+
 from bullet import Bullet
 
 
@@ -48,3 +49,15 @@ def update_screen(ai_settings, screen, ship, bullets):
         
     # отображение последнего прорисованного экрана
     pygame.display.flip()
+
+
+def update_bullets(bullets):
+    """
+    обновляет позиции пуль и удаляет старые
+    """
+    bullets.update()
+
+    # удаление пуль за экраном
+    for bullet in bullets.copy():
+        if bullet.rect.bottom <= 0:
+            bullets.remove(bullet)
