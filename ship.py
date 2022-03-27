@@ -30,7 +30,7 @@ class Ship():
         if self.moving_left:
             self.center -= self.ai_settings.ship_speed_factor
         # обновление атрибута rect на основании self.center
-            self.rect.centerx = self.center
+        self.rect.centerx = self.center
 
     def blitme(self):
         """Рисует корабль в текущей позиции"""
