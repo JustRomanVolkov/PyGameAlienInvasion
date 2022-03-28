@@ -2,6 +2,7 @@ import sys
 import pygame
 
 from bullet import Bullet
+from alien import Alien
 
 
 def check_keydown_events(event, ai_settings, screen, ship, bullets):
@@ -39,7 +40,7 @@ def check_events(ai_settings, screen, ship, bullets):
             check_keyup_events(event, ship)
 
 
-def update_screen(ai_settings, screen, ship, alien, bullets):
+def update_screen(ai_settings, screen, ship, aliens, bullets):
     """Обновляет изображения на экране и отображает новый экран."""
     # перерисовка экрана
     screen.fill(ai_settings.bg_color)
@@ -47,7 +48,7 @@ def update_screen(ai_settings, screen, ship, alien, bullets):
     for bullet in bullets.sprites():
         bullet.draw_bullet()
     ship.blitme()
-    alien.blitme()
+    aliens.draw(screen)
         
     # отображение последнего прорисованного экрана
     pygame.display.flip()
@@ -73,3 +74,22 @@ def fire_bullet(ai_settings, screen, ship, bullets):
     if len(bullets) < ai_settings.bullet_allowed:
         new_bullet = Bullet(ai_settings, screen, ship)
         bullets.add(new_bullet)
+
+
+def create_fleet(ai_settings, screen, aliens):
+    """
+    создает флот нло
+    """
+    # зодание нло и вычисление их количества в ряду
+    alien = Alien(ai_settings, screen)
+    alien_width = alien.rect.width
+    availible_space_x = ai_settings.screen_width - 2*alien_width
+    number_aliens_x = int(availible_space_x/(2*alien_width))
+
+    # создание первого ряда нло
+    for alien_number in range(number_aliens_x):
+        # создание и размещение нло в ряду
+        alien = Alien(ai_settings, screen)
+        alien.x = alien_width + 2 * alien_width * alien_number
+        alien.rect.x = alien.x
+        aliens.add(alien)
