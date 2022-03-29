@@ -31,3 +31,12 @@ class Alien(Sprite):
         выводит пришельца в текущем положении
         """
         self.screen.blit(self.image, self.rect)
+
+
+    def update(self):
+        """
+        перемещает нло вправо
+        """
+        self.x += self.ai_settings.alien_speed_factor
+        self.rect.x = self.x
+
