@@ -26,6 +26,7 @@ class Alien(Sprite):
         # сохранение точной позиции нло
         self.x = float(self.rect.x)
 
+
     def blitme(self):
         """
         выводит пришельца в текущем положении
@@ -33,10 +34,21 @@ class Alien(Sprite):
         self.screen.blit(self.image, self.rect)
 
 
+    def check_edges(self):
+        """
+        возвращает True, если нло у края
+        """
+        screen_rect = self.screen.get_rect()
+        if self.rect.right >= screen_rect.right:
+            return True
+        elif self.rect.left <= 0:
+            return True
+
+
     def update(self):
         """
-        перемещает нло вправо
+        перемещает нло вправо или влево
         """
-        self.x += self.ai_settings.alien_speed_factor
+        self.x += (self.ai_settings.alien_speed_factor * self.ai_settings.fleet_direction)
         self.rect.x = self.x
 
