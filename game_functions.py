@@ -128,9 +128,29 @@ def create_fleet(ai_settings, screen, ship, aliens):
             create_alien(ai_settings, screen, aliens, alien_number, row_number)
 
 
-def update_aliens(aliens):
+def change_fleet_directions(ai_settings, aliens):
     """
-    обновляет позиции всех НЛО во флоте
+    опускает весь флот и меняет направление
     """
+    for alien in aliens.sprites():
+        alien.rect.y += ai_settings.fleet_drop_speed
+    ai_settings.fleet_direction *= -1
+
+
+def check_fleet_edges(ai_settings, aliens):
+    """
+    реагиреут на достижение нло края экрана
+    """
+    for alien in aliens.sprites():
+        if alien.check_edges():
+            change_fleet_directions(ai_settings, aliens)
+            break
+
+
+def update_aliens(ai_settings, aliens):
+    """
+    проверяет край и обновляет позиции всех НЛО во флоте
+    """
+    check_fleet_edges(ai_settings, aliens)
     aliens.update()
 
