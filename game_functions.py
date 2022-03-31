@@ -1,6 +1,8 @@
 import sys
 import pygame
 
+from time import sleep
+
 from bullet import Bullet
 from alien import Alien
 
@@ -60,6 +62,19 @@ def update_screen(ai_settings, screen, ship, aliens, bullets):
     pygame.display.flip()
 
 
+def check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets):
+    """
+    обработка коллизий пуль с нло
+    """
+    # проверка попадания
+    # при попадании удалить пулю и нло
+    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    if len(aliens) == 0:
+        # уничтожает все пули и создает флот нло
+        bullets.empty()
+        create_fleet(ai_settings, screen, ship, aliens)
+
+
 def update_bullets(ai_settings, screen, ship, aliens, bullets):
     """
     обновляет позиции пуль и удаляет старые
@@ -69,13 +84,7 @@ def update_bullets(ai_settings, screen, ship, aliens, bullets):
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
-    # проверка попадания
-    # при попадании удалить пулю и нло
-    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
-    if len(aliens) == 0:
-        # уничтожает все пули и создает флот нло
-        bullets.empty()
-        create_fleet(ai_settings, screen, ship, aliens)
+    check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets)
 
 
 def fire_bullet(ai_settings, screen, ship, bullets):
@@ -153,10 +162,31 @@ def check_fleet_edges(ai_settings, aliens):
             break
 
 
-def update_aliens(ai_settings, aliens):
+def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
     """
     проверяет край и обновляет позиции всех НЛО во флоте
     """
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
+    # проверяет коллизии нло корабль
+    if pygame.sprite.spritecollideany(ship, aliens):
+        ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
 
+
+def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
+    """
+    обрабатывает столкновение корабля с нло
+    """
+    # уменьшает ship_left
+    stats.ships_left -= 1
+
+    # очистка нло и пуль
+    aliens.empty()
+    bullets.empty()
+
+    # создание нового корабля и флота нло
+    create_fleet(ai_settings, screen, ship, aliens)
+    ship.center_ship()
+
+    # пауза
+    sleep(0.5)
