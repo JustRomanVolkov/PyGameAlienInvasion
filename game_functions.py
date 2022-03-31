@@ -1,6 +1,7 @@
 import sys
 import pygame
 
+from time import sleep
 from bullet import Bullet
 from alien import Alien
 
@@ -160,7 +161,7 @@ def check_fleet_edges(ai_settings, aliens):
             break
 
 
-def update_aliens(ai_settings, ship, aliens):
+def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
     """
     проверяет край и обновляет позиции всех НЛО во флоте
     """
@@ -168,6 +169,23 @@ def update_aliens(ai_settings, ship, aliens):
     aliens.update()
     # проверяет коллизии нло корабль
     if pygame.sprite.spritecollideany(ship, aliens):
-        print("Ship hit!!!")
+        ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
 
 
+def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
+    """
+    обрабатывает столкновение корабля с нло
+    """
+    # уменьшает ship_left
+    stats.ships_left -= 1
+
+    # очистка нло и пуль
+    aliens.empty()
+    bullets.empty()
+
+    # создание нового корабля и флота нло
+    create_fleet(ai_settings, screen, ship, aliens)
+    ship.center_ship()
+
+    # пауза
+    sleep(0.5)

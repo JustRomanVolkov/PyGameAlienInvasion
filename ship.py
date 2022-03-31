@@ -36,3 +36,10 @@ class Ship():
         """Рисует корабль в текущей позиции"""
         self.screen.blit(self.image, self.rect)
 
+
+    def center_ship(self):
+        """
+        размещает корабль по центру нижней части экрана
+        """
+        self.center = self.screen_rect.centerx
+
