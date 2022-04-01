@@ -190,16 +190,20 @@ def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
     """
     обрабатывает столкновение корабля с нло
     """
-    # уменьшает ship_left
-    stats.ships_left -= 1
+    if stats.ships_left > 0:
+        # уменьшает ship_left
+        stats.ships_left -= 1
 
-    # очистка нло и пуль
-    aliens.empty()
-    bullets.empty()
+        # очистка нло и пуль
+        aliens.empty()
+        bullets.empty()
 
-    # создание нового корабля и флота нло
-    create_fleet(ai_settings, screen, ship, aliens)
-    ship.center_ship()
+        # создание нового корабля и флота нло
+        create_fleet(ai_settings, screen, ship, aliens)
+        ship.center_ship()
 
-    # пауза
-    sleep(0.5)
+        # пауза
+        sleep(0.5)
+    else:
+        stats.game_active = False
+
