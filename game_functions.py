@@ -162,6 +162,18 @@ def check_fleet_edges(ai_settings, aliens):
             break
 
 
+def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
+    """
+    проверяет касаниее нло низа экрана
+    """
+    screen_rect = screen.get_rect()
+    for alien in aliens.sprites():
+        if alien.rect.bottom >= screen_rect.bottom:
+            # тоже самое что и при касание нло карабля
+            ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+            break
+
+
 def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
     """
     проверяет край и обновляет позиции всех НЛО во флоте
@@ -171,22 +183,27 @@ def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
     # проверяет коллизии нло корабль
     if pygame.sprite.spritecollideany(ship, aliens):
         ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
-
+    # проверка достжения нло до низа экрана
+    check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets)
 
 def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
     """
     обрабатывает столкновение корабля с нло
     """
-    # уменьшает ship_left
-    stats.ships_left -= 1
+    if stats.ships_left > 0:
+        # уменьшает ship_left
+        stats.ships_left -= 1
 
-    # очистка нло и пуль
-    aliens.empty()
-    bullets.empty()
+        # очистка нло и пуль
+        aliens.empty()
+        bullets.empty()
 
-    # создание нового корабля и флота нло
-    create_fleet(ai_settings, screen, ship, aliens)
-    ship.center_ship()
+        # создание нового корабля и флота нло
+        create_fleet(ai_settings, screen, ship, aliens)
+        ship.center_ship()
 
-    # пауза
-    sleep(0.5)
+        # пауза
+        sleep(0.5)
+    else:
+        stats.game_active = False
+
