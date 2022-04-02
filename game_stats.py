@@ -12,6 +12,9 @@ class GameStats():
         # игра запускается при активном состоянии
         self.game_active = False
 
+        # рекорд не должен сбрасываться
+        self.high_score = 0
+
     def reset_stats(self):
         """
         инициализирует статистику меняющуюся в ходе игры
