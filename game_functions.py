@@ -101,11 +101,12 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
     # при попадании удалить пулю и нло
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
     if collisions:
-        stats.score += ai_settings.alien_points
+        for aliens in collisions.values():
+            stats.score += ai_settings.alien_points * len(aliens)
         sb.prep_score()
 
+    # уничтожает все пули, увеличивает скорсть игры и создает флот нло
     if len(aliens) == 0:
-        # уничтожает все пули, увеличивает скорсть игры и создает флот нло
         bullets.empty()
         ai_settings.increase_speed()
         create_fleet(ai_settings, screen, ship, aliens)
