@@ -33,15 +33,25 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def check_play_button(stats, play_button, mouse_x, mouse_y):
+def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y):
     """
     запускает игру при нажатии кнопки
     """
-    if play_button.rect.collidepoint(mouse_x, mouse_y):
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
+        # скрытие курсора
+        pygame.mouse.set_visible(False)
+        # сброс игровой статистики
+        stats.reset_stats()
         stats.game_active = True
+        # очистка списка нло и пуль
+        aliens.empty()
+        bullets.empty()
+        # создание нового флота и центрирование корабля
+        create_fleet(ai_settings, screen, ship, aliens)
+        ship.center_ship()
 
-
-def check_events(ai_settings, screen, stats, play_button, ship, bullets):
+def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets):
     """
     Обрабатывает нажатие клавиш и мыши
     """
@@ -54,7 +64,8 @@ def check_events(ai_settings, screen, stats, play_button, ship, bullets):
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(stats, play_button, mouse_x, mouse_y)
+            check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y)
+
 
 
 def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button):
@@ -201,6 +212,7 @@ def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
     # проверка достжения нло до низа экрана
     check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets)
 
+
 def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
     """
     обрабатывает столкновение корабля с нло
@@ -221,4 +233,5 @@ def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
         sleep(0.5)
     else:
         stats.game_active = False
+        pygame.mouse.set_visible(True)
 
