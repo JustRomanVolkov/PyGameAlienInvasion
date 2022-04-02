@@ -70,7 +70,7 @@ def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets)
 
 
 
-def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button):
+def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_button):
     """
     Обновляет изображения на экране и отображает новый экран
     """
@@ -81,6 +81,9 @@ def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button
         bullet.draw_bullet()
     ship.blitme()
     aliens.draw(screen)
+
+    # вывод счета
+    sb.show_score()
 
     # отображает кнопку, если игра неактивна
     if not stats.game_active:
