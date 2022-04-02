@@ -53,6 +53,7 @@ def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bul
         create_fleet(ai_settings, screen, ship, aliens)
         ship.center_ship()
 
+
 def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets):
     """
     Обрабатывает нажатие клавиш и мыши
@@ -67,7 +68,6 @@ def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y)
-
 
 
 def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_button):
@@ -104,6 +104,7 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
         for aliens in collisions.values():
             stats.score += ai_settings.alien_points * len(aliens)
         sb.prep_score()
+        check_high_score(stats, sb)
 
     # уничтожает все пули, увеличивает скорсть игры и создает флот нло
     if len(aliens) == 0:
@@ -245,4 +246,13 @@ def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
     else:
         stats.game_active = False
         pygame.mouse.set_visible(True)
+
+
+def check_high_score(stats, sb):
+    """
+    проверяет появился ли рекорд
+    """
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        sb.prep_high_score()
 
