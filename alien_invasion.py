@@ -3,6 +3,7 @@ from pygame.sprite import Group
 
 from settings import Settings
 from game_stats import GameStats
+from scoreboard import Scoreboard
 from button import Button
 from ship import Ship
 import game_functions as gf
@@ -15,10 +16,11 @@ def run_game():
     screen = pygame.display.set_mode((ai_settings.screen_width, ai_settings.screen_height))
     pygame.display.set_caption("Alien Invasion")
     # создание кнопки
-    play_button = Button(ai_settings, screen, "Play")
+    play_button = Button(ai_settings, screen, "играть")
 
     # создание экземпляра хранения игровой статистики
     stats = GameStats(ai_settings)
+    sb = Scoreboard(ai_settings, screen, stats)
 
     # создание корабля, группы пуль и группы нло
     ship = Ship(ai_settings, screen)
@@ -27,16 +29,15 @@ def run_game():
 
     # создает флот нло
     gf.create_fleet(ai_settings, screen, ship, aliens)
-
     # запуск основного цикла игры
     while True:
         # отслеживание событий клавиатуры и мыши
-        gf.check_events(ai_settings, screen, stats, play_button, ship, bullets)
+        gf.check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets)
+        gf.update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_button)
         if stats.game_active:
             ship.update()
-            gf.update_bullets(ai_settings, screen, ship, aliens, bullets)
-            gf.update_aliens(ai_settings, stats, screen, ship, aliens, bullets)
-            gf.update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button)
+            gf.update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets)
+            gf.update_aliens(ai_settings, screen, stats, ship, aliens, bullets)
 
 
 run_game()
