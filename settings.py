@@ -32,6 +32,9 @@ class Settings():
         # fleet_direction = 1 <<< вправо, -1 <<< влево
         self.fleet_direction = 1
 
+        # награда за убийство нло
+        self.alien_points = 50
+
     def increase_speed(self):
         """
         увеличивает настройки скорости
