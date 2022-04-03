@@ -33,7 +33,7 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y):
+def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets, mouse_x, mouse_y):
     """
     запускает игру при нажатии кнопки
     """
@@ -41,20 +41,29 @@ def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bul
     if button_clicked and not stats.game_active:
         # сброс игровых настроек
         ai_settings.initialize_dynamic_settings()
+
         # скрытие курсора
         pygame.mouse.set_visible(False)
+
         # сброс игровой статистики
         stats.reset_stats()
         stats.game_active = True
+
+        # сброс изображения счетов и уровня
+        sb.prep_score()
+        sb.prep_high_score()
+        sb.prep_level()
+
         # очистка списка нло и пуль
         aliens.empty()
         bullets.empty()
+
         # создание нового флота и центрирование корабля
         create_fleet(ai_settings, screen, ship, aliens)
         ship.center_ship()
 
 
-def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets):
+def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets):
     """
     Обрабатывает нажатие клавиш и мыши
     """
@@ -67,7 +76,7 @@ def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets)
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y)
+            check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets, mouse_x, mouse_y)
 
 
 def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_button):
@@ -106,10 +115,15 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
         sb.prep_score()
         check_high_score(stats, sb)
 
-    # уничтожает все пули, увеличивает скорсть игры и создает флот нло
+    # уничтожает все пули, увеличивает скорсть игры и создает флот нло если флот уничтожен
     if len(aliens) == 0:
         bullets.empty()
         ai_settings.increase_speed()
+
+        # увеличение уровня
+        stats.level += 1
+        sb.prep_level()
+
         create_fleet(ai_settings, screen, ship, aliens)
 
 
