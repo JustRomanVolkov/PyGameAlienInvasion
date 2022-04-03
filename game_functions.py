@@ -53,6 +53,7 @@ def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens,
         sb.prep_score()
         sb.prep_high_score()
         sb.prep_level()
+        sb.prep_ships()
 
         # очистка списка нло и пуль
         aliens.empty()
@@ -214,7 +215,7 @@ def check_fleet_edges(ai_settings, aliens):
             break
 
 
-def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
+def check_aliens_bottom(ai_settings, screen, stats, sb, ship, aliens, bullets):
     """
     проверяет касаниее нло низа экрана
     """
@@ -222,11 +223,11 @@ def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
             # тоже самое что и при касание нло карабля
-            ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+            ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets)
             break
 
 
-def update_aliens(ai_settings, screen, stats, ship, aliens, bullets):
+def update_aliens(ai_settings, screen, stats, sb, ship, aliens, bullets):
     """
     проверяет край и обновляет позиции всех НЛО во флоте
     """
@@ -234,18 +235,21 @@ def update_aliens(ai_settings, screen, stats, ship, aliens, bullets):
     aliens.update()
     # проверяет коллизии нло корабль
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+        ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets)
     # проверка достжения нло до низа экрана
-    check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets)
+    check_aliens_bottom(ai_settings, screen, stats, sb, ship, aliens, bullets)
 
 
-def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
+def ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets):
     """
     обрабатывает столкновение корабля с нло
     """
     if stats.ships_left > 0:
         # уменьшает ship_left
         stats.ships_left -= 1
+
+        # обновляет информацию о жизнях
+        sb.prep_ships()
 
         # очистка нло и пуль
         aliens.empty()
