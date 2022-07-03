@@ -4,18 +4,19 @@ from pygame.sprite import Group
 from ship import Ship
 
 
-class Scoreboard():
+class Scoreboard:
     """
     класс для вывода игровой информации
     """
-    def __init__(self, ai_settings, screen, stats):
+    def __init__(self, ai_game):
         """
         инициализирует атрибуты подсчета очков
         """
-        self.screen = screen
-        self.screen_rect = screen.get_rect()
-        self.ai_settings = ai_settings
-        self.stats = stats
+        self.ai_game = ai_game
+        self.screen = ai_game.screen
+        self.screen_rect = self.screen.get_rect()
+        self.settings = ai_game.settings
+        self.stats = ai_game.stats
 
         # настройки шрифта для вывода очков
         self.text_color = (30, 30, 30)
@@ -31,10 +32,10 @@ class Scoreboard():
         """
         преобразует текущий счет в графическое изображение
         """
-        round_score = round(self.stats.score, -1)
-        score_str = '{:,}'.format(round_score)
-        self.score_image = self.font.render(
-            score_str, True, self.text_color, self.ai_settings.bg_color)
+        rounded_score = round(self.stats.score, -1)
+        score_str = "{:,}".format(rounded_score)
+        self.score_image = self.font.render(score_str, True,
+                                            self.text_color, self.settings.bg_color)
 
         # вывод счета в правой верхней части экрана
         self.score_rect = self.score_image.get_rect()
@@ -48,7 +49,7 @@ class Scoreboard():
         high_score = round(self.stats.high_score, -1)
         high_score_str = '{:,}'.format(high_score)
         self.high_score_image = self.font.render(
-            high_score_str, True, self.text_color, self.ai_settings.bg_color)
+            high_score_str, True, self.text_color, self.settings.bg_color)
 
         # вывод рекорда в центре верхней части экрана
         self.high_score_rect = self.high_score_image.get_rect()
@@ -59,8 +60,9 @@ class Scoreboard():
         """
         преобразует надпись уровень в графическое изображение
         """
-        self.level_image = self.font.render(
-            str(self.stats.level), True, self.text_color, self.ai_settings.bg_color)
+        level_str = str(self.stats.level)
+        self.level_image = self.font.render(level_str, True,
+                                            self.text_color, self.settings.bg_color)
 
         # вывод уровня под текущим счетом
         self.level_rect = self.level_image.get_rect()
@@ -73,10 +75,16 @@ class Scoreboard():
         """
         self.ships = Group()
         for ship_number in range(self.stats.ships_left):
-            ship = Ship(self. ai_settings, self.screen)
+            ship = Ship(self.ai_game)
             ship.rect.x = 10 + ship_number * ship.rect.width
             ship.rect.y = 10
             self.ships.add(ship)
+
+    def check_high_score(self):
+        """Проверяет, появился ли новый рекорд."""
+        if self.stats.score > self.stats.high_score:
+            self.stats.high_score = self.stats.score
+            self.prep_high_score()
 
     def show_score(self):
         """

@@ -7,15 +7,15 @@ class Alien(Sprite):
     """
     класс нло
     """
-    def __init__(self, ai_settings, screen):
+    def __init__(self, ai_game):
         """
         ининциализирует нло и задает его начальную позицию
         """
         super().__init__()
-        self.screen = screen
-        self.ai_settings = ai_settings
+        self.screen = ai_game.screen
+        self.settings = ai_game.settings
 
-        # загрузка изображения нло и атребута rect
+        # загрузка изображения нло и атрибута rect
         self.image = pygame.image.load('images/ufo.bmp')
         self.rect = self.image.get_rect()
 
@@ -26,29 +26,17 @@ class Alien(Sprite):
         # сохранение точной позиции нло
         self.x = float(self.rect.x)
 
-
-    def blitme(self):
-        """
-        выводит пришельца в текущем положении
-        """
-        self.screen.blit(self.image, self.rect)
-
-
     def check_edges(self):
         """
-        возвращает True, если нло у края
+        возвращает True, если нло у края.
         """
         screen_rect = self.screen.get_rect()
-        if self.rect.right >= screen_rect.right:
+        if self.rect.right >= screen_rect.right or self.rect.left <= 0:
             return True
-        elif self.rect.left <= 0:
-            return True
-
 
     def update(self):
         """
         перемещает нло вправо или влево
         """
-        self.x += (self.ai_settings.alien_speed_factor * self.ai_settings.fleet_direction)
+        self.x += (self.settings.alien_speed * self.settings.fleet_direction)
         self.rect.x = self.x
-
